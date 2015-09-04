@@ -14,8 +14,7 @@ $v = new LoginView();
 $dtv = new DateTimeView();
 $lv = new LayoutView();
 
-//RENDER VIEWS (NOT LOGGED IN)
-$lv->render(false, $v, $dtv);
+$feedback = "";
 
 //if user just submitted a login form
 if (isset($_POST["LoginView::Login"])) {
@@ -27,7 +26,7 @@ if (isset($_POST["LoginView::Login"])) {
     } elseif (!empty($_POST["LoginView::UserName"]) && !empty($_POST["LoginView::Password"])) {
         if ($_POST["LoginView::UserName"] == "Admin") {
             if ($_POST["LoginView::Password"] == "Password") {
-               $feedback = "User exist and the password match.";
+               $feedback = "Welcome";
             } else {
                $feedback = "Wrong name or password";
             }
@@ -35,6 +34,7 @@ if (isset($_POST["LoginView::Login"])) {
            $feedback = "Wrong name or password";
         }
     }
-    //testing purposes
-    echo $feedback;
 }
+
+//RENDER VIEWS (NOT LOGGED IN)
+$lv->render(false, $v, $dtv, $feedback); //Not sure if this was allowed but it works
