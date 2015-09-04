@@ -7,7 +7,7 @@ class DateTimeView {
 	
 	public function __construct() {
 		$this->timeZone = date_default_timezone_set('Europe/Stockholm');
-		$this->timeString = date("l") . ", the " . date("jS") . " of " . date("F Y") . ", The time is " . date("H:i:s");
+		$this->timeString = date('l, \t\h\e jS \o\f F Y, \t\h\e \t\i\m\e \i\s H:i:s');
 	}
 	
 	public function show() {
