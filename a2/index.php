@@ -14,27 +14,35 @@ $v = new LoginView();
 $dtv = new DateTimeView();
 $lv = new LayoutView();
 
-$feedback = "";
-
-//if user just submitted a login form
-if (isset($_POST["LoginView::Login"])) {
-    // check login form contents
-    if (empty($_POST["LoginView::UserName"])) {
-        $feedback = "Username is missing";
-    } elseif (empty($_POST["LoginView::Password"])) {
-        $feedback = "Password is missing";
-    } elseif (!empty($_POST["LoginView::UserName"]) && !empty($_POST["LoginView::Password"])) {
-        if ($_POST["LoginView::UserName"] == "Admin") {
-            if ($_POST["LoginView::Password"] == "Password") {
-               $feedback = "Welcome";
-            } else {
-               $feedback = "Wrong name or password";
-            }
-        } else {
-           $feedback = "Wrong name or password";
-        }
-    }
+//SESSION
+session_start();
+if (!isset($_SESSION['IsLoggedIn'])) {
+    $_SESSION['IsLoggedIn'] = false;
 }
 
-//RENDER VIEWS (NOT LOGGED IN)
-$lv->render(false, $v, $dtv, $feedback); //Not sure if this was allowed but it works
+$message = "";
+
+/**
+* If user just submitted a login form or pressed logout button
+* @param LoginView::UserName & LoginView::Password, Data from form
+* @return void, BUT writes the response message from the results
+*/
+if (isset($_POST["LoginView::Login"])) {
+    if (empty($_POST["LoginView::UserName"])) {
+        $message = "Username is missing";
+    } elseif (empty($_POST["LoginView::Password"])) {
+        $message = "Password is missing";
+    } elseif ($_POST["LoginView::UserName"] == "Admin" && $_POST["LoginView::Password"] == "Password") {
+        $message = "Welcome";
+        $_SESSION['IsLoggedIn'] = true;
+    } else {
+        $message = "Wrong name or password";
+    }
+} elseif (isset($_POST["LoginView::Logout"])) {
+    $message = "Bye bye!";
+    $_SESSION['IsLoggedIn'] = false;
+}
+
+//RENDER VIEWS
+$lv->render($_SESSION['IsLoggedIn'], $v, $dtv, $message);
+// $lv->render(false, $v, $dtv);

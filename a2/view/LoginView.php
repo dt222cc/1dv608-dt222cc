@@ -1,6 +1,7 @@
 <?php
 
 class LoginView {
+	
 	private static $login = 'LoginView::Login';
 	private static $logout = 'LoginView::Logout';
 	private static $name = 'LoginView::UserName';
@@ -17,15 +18,12 @@ class LoginView {
 	 *
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response($feedback) {
-		if ($feedback == "") {
-			$message = "";
+	public function response($message) {
+		if ($_SESSION["IsLoggedIn"]) {
+			$response = $this->generateLogoutButtonHTML($message);
 		} else {
-			$message = $feedback;
+			$response = $this->generateLoginFormHTML($message);
 		}
-		
-		$response = $this->generateLoginFormHTML($message);
-		//$response .= $this->generateLogoutButtonHTML($message);
 		return $response;
 	}
 
