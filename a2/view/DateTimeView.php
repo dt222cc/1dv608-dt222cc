@@ -1,7 +1,5 @@
 <?php
 
-namespace view;
-
 class DateTimeView {
 	
 	private $timeZone;

@@ -1,7 +1,5 @@
 <?php
 
-namespace controller;
-
 class Login {
     
     private $message;
