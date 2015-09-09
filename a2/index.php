@@ -10,9 +10,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 //CREATE OBJECTS OF THE VIEWS
-$v = new LoginView();
-$dtv = new DateTimeView();
-$lv = new LayoutView();
+$v = new \view\LoginView();
+$dtv = new \view\DateTimeView();
+$lv = new \view\LayoutView();
 
 //SESSION
 session_start();
