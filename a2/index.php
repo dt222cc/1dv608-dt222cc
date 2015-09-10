@@ -14,15 +14,15 @@ ini_set('display_errors', 'On');
 $v = new LoginView();
 $dtv = new DateTimeView();
 $lv = new LayoutView();
-$login = new Login();
+// $login = new Login();
 
 //SESSION
 session_start();
-if (!isset($_SESSION['IsLoggedIn'])) {
-    $_SESSION['IsLoggedIn'] = false;
-}
 
-$message = "";
+if (!isset($_SESSION['IsLoggedIn']) && !isset($_SESSION['Feedback'])) {
+    $_SESSION['IsLoggedIn'] = false;
+    $_SESSION['Feedback'] = "";
+}
 
 /**
 * If user just submitted a login form or pressed logout button
@@ -31,23 +31,25 @@ $message = "";
 */
 if (isset($_POST["LoginView::Login"])) {
     if (empty($_POST["LoginView::UserName"])) {
-        $message = "Username is missing";
+        $_SESSION["Feedback"] = "Username is missing";
     } elseif (empty($_POST["LoginView::Password"])) {
-        $message = "Password is missing";
+        $_SESSION["Feedback"] = "Password is missing";
     } elseif ($_POST["LoginView::UserName"] == "Admin" && $_POST["LoginView::Password"] == "Password") {
-        $message = "Welcome";
+        $_SESSION["Feedback"] = "Welcome";
         $_SESSION['IsLoggedIn'] = true;
+        header('location: /portfolio/1dv608-a2/index.php'); //public
+        // header('location: /a2/index.php'); //c9
+        exit(); //conflict with auto test app?
     } else {
-        $message = "Wrong name or password";
+        $_SESSION["Feedback"] = "Wrong name or password";
     }
 } elseif (isset($_POST["LoginView::Logout"])) {
-    $message = "Bye bye!";
+    $_SESSION["Feedback"] = "Bye bye!";
     $_SESSION['IsLoggedIn'] = false;
+    header('location: /portfolio/1dv608-a2/index.php'); //public
+    // header('location: /a2/index.php'); //c9
+    exit(); //conflict with auto test app?
 }
 
-// $login->doLogin();
-
 //RENDER VIEWS
-$lv->render($_SESSION['IsLoggedIn'], $v, $dtv, $message);
-// $lv->render($_SESSION['IsLoggedIn'], $v, $dtv, $login->getMessage());
-// $lv->render(false, $v, $dtv);
+$lv->render($_SESSION['IsLoggedIn'], $v, $dtv);

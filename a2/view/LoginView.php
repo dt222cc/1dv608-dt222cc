@@ -18,12 +18,21 @@ class LoginView {
 	 *
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response($message) {
+	public function response() {
+		$message = "";
+		
+		if ($_SESSION['Feedback'] != "") {
+			$message = $_SESSION['Feedback'];
+		}
+		
+		$_SESSION['Feedback'] = "";
+		
 		if ($_SESSION["IsLoggedIn"]) {
 			$response = $this->generateLogoutButtonHTML($message);
 		} else {
 			$response = $this->generateLoginFormHTML($message);
 		}
+		
 		return $response;
 	}
 
@@ -34,7 +43,7 @@ class LoginView {
 	*/
 	private function generateLogoutButtonHTML($message) {
 		return '
-			<form  method="post" >
+			<form method="post" >
 				<p id="' . self::$messageId . '">' . $message .'</p>
 				<input type="submit" name="' . self::$logout . '" value="logout"/>
 			</form>
@@ -71,6 +80,10 @@ class LoginView {
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	private function getRequestUserName() {
 		//RETURN REQUEST VARIABLE: USERNAME
-		return (isset($_POST['LoginView::UserName']) ? $_POST['LoginView::UserName'] : '');
+		if (isset($_POST['LoginView::UserName'])) {
+			return $_POST['LoginView::UserName'];
+		}
+		
+		return null;
 	}
 }

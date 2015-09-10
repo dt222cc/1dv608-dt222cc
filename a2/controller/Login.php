@@ -8,11 +8,6 @@ class Login {
         $this->message = "";
     }
     
-    /**
-    * If user just submitted a login form or pressed logout button
-    * @param LoginView::UserName & LoginView::Password, Data from form
-    * @return void, BUT writes the response message from the results
-    */
     public function doLogin() {
         if (isset($_POST["LoginView::Login"])) {
             if (empty($_POST["LoginView::UserName"])) {
@@ -36,4 +31,4 @@ class Login {
     }
 }
 
-//Note: Users class, for-loop 
+//Note: Before change to session variable Feedback
