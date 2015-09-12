@@ -20,14 +20,14 @@ class LoginView {
 	 */
 	public function response() {
 		$message = "";
-		
-		if ($_SESSION['Feedback'] != "") {
-			$message = $_SESSION['Feedback'];
+	
+		if (isset($_SESSION['FeedBack']) && $_SESSION['FeedBack'] != "") {
+			$message = $_SESSION['FeedBack'];
 		}
 		
-		$_SESSION['Feedback'] = "";
+		$_SESSION['FeedBack'] = "";
 		
-		if ($_SESSION["IsLoggedIn"]) {
+		if ($_SESSION['IsLoggedIn']) {
 			$response = $this->generateLogoutButtonHTML($message);
 		} else {
 			$response = $this->generateLoginFormHTML($message);
@@ -80,8 +80,8 @@ class LoginView {
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	private function getRequestUserName() {
 		//RETURN REQUEST VARIABLE: USERNAME
-		if (isset($_POST['LoginView::UserName'])) {
-			return $_POST['LoginView::UserName'];
+		if (isset($_POST[self::$name])) {
+			return $_POST[self::$name];
 		}
 		
 		return null;
