@@ -30,6 +30,7 @@ class LoginView {
 		
 		if ($this->lModel->getMessage() !== null) {
 			$message = $this->lModel->getMessage();
+			$_SESSION['Message'] = "";
 		}
 		
 		if ($this->lModel->getIsLoggedIn()) {

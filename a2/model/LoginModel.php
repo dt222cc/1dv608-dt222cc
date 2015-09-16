@@ -3,12 +3,6 @@
 //As of now this class handles the session variables
 class LoginModel {
     
-    /**
-     * Location for Redirect, have one for the local(cloud9) server and another for the public server
-     */
-    private static $headerLocation = "location: /a2/index.php"; //c9 (local)
-    // private static $headerLocation = "location: /portfolio/1dv608-a2/index.php"; //public
-    
     public function __construct() {
         session_start();
         
@@ -35,14 +29,13 @@ class LoginModel {
     }
     
     public function getMessage() {
-        if (!isset($_SESSION['Message'])) {
-            return null;
-        } else {
+        if (isset($_SESSION['Message'])) {
             return $_SESSION['Message'];
+        } else {
+            return null;
         }
     }
-    
-    public function getHeaderLocation() {
-        return self::$headerLocation;
-    }
 }
+
+// Read somewhere that session should be handled in the model, but later on i found out that it wasn't true.
+// Anyway, I'll keep it as it is for now.

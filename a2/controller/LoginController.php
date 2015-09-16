@@ -3,6 +3,13 @@
 class LoginController {
     
     /**
+     * Location for Redirect, have one for the local(cloud9) server and another for the public server
+     * @var String
+     */
+    private static $headerLocation = "location: /a2/index.php"; //c9 (local)
+    // private static $headerLocation = "location: /portfolio/1dv608-a2/index.php"; //public
+    
+    /**
      * @var \model\LoginModel
      */
     private $login;
@@ -44,8 +51,8 @@ class LoginController {
                 } elseif ($_POST['LoginView::UserName'] == "Admin" && $_POST['LoginView::Password'] == "Password") {
                     $this->login->changeMessage("Welcome");
                     $this->login->toggleIsLoggedIn();
-                    header($this->login->getHeaderLocation());
-                    // exit(); // For manual testing (or else the "Welcome" text is missing). Note: Conflicts with auto test (causes errors: 1.7, 1.8, 1.8.1).
+                    header(self::$headerLocation);
+                    exit(); // For manual testing (or else the "Welcome" text is missing). Note: Conflicts with auto test (causes errors: 1.7, 1.8, 1.8.1).
                 } else {
                     $this->login->changeMessage("Wrong name or password");
                 }
@@ -54,8 +61,8 @@ class LoginController {
             if (isset($_POST['LoginView::Logout'])) {
                 $this->login->changeMessage("Bye bye!");
                 $this->login->toggleIsLoggedIn();
-                header($this->login->getHeaderLocation());
-                // exit(); // For manual testing (or else the "Bye bye!" text is missing). Note: Conflicts with auto test (causes errors: 2.1, 2.4).
+                header(self::$headerLocation);
+                exit(); // For manual testing (or else the "Bye bye!" text is missing). Note: Conflicts with auto test (causes errors: 2.1, 2.4).
             }
         }
     }
@@ -65,14 +72,5 @@ class LoginController {
      */
     public function getHTML() {
         $this->layoutView->render($this->login->getIsLoggedIn(), $this->loginView, $this->dateTimeView);
-        
-        $this->resetMessage();
-    }
-    
-    /**
-     * Reset the message so on refresh we get no feedback message, which was stored in the session variable 'Message'
-     */
-    private function resetMessage() {
-        $this->login->changeMessage("");
     }
 }
