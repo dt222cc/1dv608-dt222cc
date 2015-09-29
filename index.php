@@ -12,5 +12,3 @@
 		</ul>
 	</body>
 </html>
-
-<!-- Second commit test -->
