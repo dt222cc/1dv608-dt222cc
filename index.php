@@ -7,7 +7,8 @@
 	<body>
 		<ul>
 			<li><a href=a2/index.php>Assignment 2 - Login</a></li>
-			<!--<li><a href=a4/index.php>Assignment 4 - Register</a></li>-->
+			<li><a href=a4-toll/index.php>Assignment 4 - Register - toll</a></li>
+			<li><a href=a4-dt/index.php>Assignment 4 - Register - dt</a></li>
 		</ul>
 	</body>
 </html>

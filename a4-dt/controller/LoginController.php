@@ -52,7 +52,7 @@ class LoginController {
                     $this->login->changeMessage("Welcome");
                     $this->login->toggleIsLoggedIn();
                     header(self::$headerLocation);
-                    // exit(); // For manual testing (or else the "Welcome" text is missing). Note: Conflicts with auto test (causes errors: 1.7, 1.8, 1.8.1).
+                    exit(); // For manual testing (or else the "Welcome" text is missing). Note: Conflicts with auto test (causes errors: 1.7, 1.8, 1.8.1).
                 } else {
                     $this->login->changeMessage("Wrong name or password");
                 }
@@ -62,7 +62,7 @@ class LoginController {
                 $this->login->changeMessage("Bye bye!");
                 $this->login->toggleIsLoggedIn();
                 header(self::$headerLocation);
-                // exit(); // For manual testing (or else the "Bye bye!" text is missing). Note: Conflicts with auto test (causes errors: 2.1, 2.4).
+                exit(); // For manual testing (or else the "Bye bye!" text is missing). Note: Conflicts with auto test (causes errors: 2.1, 2.4).
             }
         }
     }
