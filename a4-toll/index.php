@@ -4,6 +4,7 @@ require_once("Settings.php");
 require_once("controller/LoginController.php");
 require_once("view/DateTimeView.php");
 require_once("view/LayoutView.php");
+require_once("view/RegisterView.php");
 
 if (Settings::DISPLAY_ERRORS) {
 	error_reporting(-1);
@@ -24,4 +25,5 @@ $c->doControl();
 //Generate output
 $dtv = new DateTimeView();
 $lv = new LayoutView();
-$lv->render($m->isLoggedIn($v->getUserClient()), $v, $dtv);
+$r = new RegisterView();
+$lv->render($m->isLoggedIn($v->getUserClient()), $v, $r, $dtv);

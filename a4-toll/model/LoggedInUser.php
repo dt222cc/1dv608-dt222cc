@@ -19,7 +19,6 @@ class LoggedInUser {
 	public function __construct(UserCredentials $uc) {
 		$this->userName = $uc->getName();
 		$this->client = $uc->getClient();
-		
 	}
 
 	/**
