@@ -1,10 +1,7 @@
 <?php
 
 class RegisterView {
-	/**
-	 * These names are used in $_POST
-	 * @var string
-	 */
+	// These names are used in $_POST
 	private static $register = "DoRegistration";
 	private static $name = "RegisterView::UserName";
 	private static $password = "RegisterView::Password";
@@ -13,10 +10,13 @@ class RegisterView {
 	private static $CookiePassword = "RegisterView::CookiePassword";
 	private static $messageId = "RegisterView::Message";
 
+	// For validation
 	private static $minPassword = 6;
 	private static $minUserName = 3;
 
+	// For redirecting to login form with a message
 	private static $sessionSaveLocation = "\\view\\LoginView\\message";
+	private $actualLink;
 
 	public function __construct() {
 		self::$sessionSaveLocation .= Settings::APP_SESSION_NAME;
@@ -26,12 +26,12 @@ class RegisterView {
 	 * Create HTTP response
 	 *
 	 * Should be called if user wants to register (a register attempt)
+	 * Gets the correct messages 
 	 * @return String HTML
 	 */
 	public function response() {
 		$message = "";
 
-		//Correct messages
 		if ($this->userWantsToRegister()) {
 			if ($this->getUserName() == "") {
 				$message .= $this->getUserNameError();
@@ -45,32 +45,16 @@ class RegisterView {
 			} else if ($this->getPassword() != $this->getPasswordRepeat()) {
 				$message .= $this->getMatchError();
 			} else if ($this->getPassword() == $this->getPasswordRepeat()) {
-				$message .= $this->getRegisterUser();
+				$message .= $this->getRegisteredUser();
 				$this->redirect($message);
-			} else {
-				$message = $this->getSessionMessage();
 			}
-			//TODO: Check if user exists, register the new user to persistence (data folder?)
+			//TODO: Check if user exists, register the new user to persistence storage
 		}
 		return $this->generateRegisterFormHTML($message);
 	}
 
-	private function redirect($message) {
-		$_SESSION[self::$sessionSaveLocation] = $message;
-		$actual_link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-		header("Location: $actual_link");
-	}
-
-	private function getSessionMessage() {
-		if (isset($_SESSION[self::$sessionSaveLocation])) {
-			$message = $_SESSION[self::$sessionSaveLocation];
-			unset($_SESSION[self::$sessionSaveLocation]);
-			return $message;
-		}
-		return "";
-	}
-
 	/**
+	 * Render HTML with message
 	 * @return String HTML
 	 */
 	private function generateRegisterFormHTML($message) {
@@ -96,14 +80,25 @@ class RegisterView {
 		";
 	}
 
+	// Redirect to the login form with successful registration message
+	private function redirect($message) {
+		$_SESSION[self::$sessionSaveLocation] = $message;
+		$this->actualLink = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+		header("Location: $this->actualLink");
+	}
+
 	/**
-	 * accessor method for register attempts by form
+	 * Accessor method for register attempts by form
 	 * @return boolean true if user did try to register
 	 */
 	public function userWantsToRegister() {
 		return isset($_POST[self::$register]);
 	}
 
+	/**
+	 * Accessor methods for retrieving posted data from the register form
+	 * @return string
+	 */
 	private function getUserName() {
 		if (isset($_POST[self::$name]))
 			return trim($_POST[self::$name]);
@@ -122,6 +117,10 @@ class RegisterView {
 		return "";
 	}
 
+	/**
+	 * Accessor methods for retrieving error messages.
+	 * @return string
+	 */
 	private function getUsernameError() {
 		return "Username has too few characters, at least 3 characters.";
 	}
@@ -142,7 +141,7 @@ class RegisterView {
 		return "Username contains invalid characters.";
 	}
 
-	private function getRegisterUser() {
-		return "Registered new user (not really).";
+	private function getRegisteredUser() {
+		return "Registered new user (placeholder!).";
 	}
 }

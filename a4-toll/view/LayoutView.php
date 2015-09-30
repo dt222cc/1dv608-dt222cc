@@ -3,8 +3,12 @@
 class LayoutView {
   
   private static $registerURL = "register";
-  private $actualLink;
 
+  /**
+   * @param boolean, /view/LoginView, /view/RegisterView, /view/DateTimeView
+   * Note: wanted to make this different and not send in both LoginView and RegisterView,
+   * but I did'nt get it to work so I went with this solution
+   */
   public function render($isLoggedIn, LoginView $v, RegisterView $r, DateTimeView $dtv) {
     echo '<!DOCTYPE html>
       <html>
@@ -29,9 +33,6 @@ class LayoutView {
     ';
   }
 
-  /**
-   * @return link to register or login
-   */
   private function getLink() {
     if (isset($_GET[self::$registerURL]) == false) {
       return '<a href="?' . self::$registerURL . '">Register a new user</a>';
