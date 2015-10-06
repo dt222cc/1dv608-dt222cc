@@ -75,7 +75,7 @@ class RegisterView {
 			$this->redirect($message);
         }
         else if ($this->userAlreadyExists === true) {
-            $message = "User exists, pick another username";
+            $message = "User exists, pick another username.";
         }
 		else {
 			if ($this->userWantsToRegister() === true) {
