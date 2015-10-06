@@ -3,6 +3,7 @@
 class LayoutView {
   
   private static $registerURL = "register";
+  private static $loginURL = "index.php";
 
   /**
    * @param boolean, /view/LoginView, /view/RegisterView, /view/DateTimeView
@@ -33,15 +34,21 @@ class LayoutView {
     ';
   }
 
+  /**
+   * @return the correct link between login and register
+   */
   private function getLink() {
     if (isset($_GET[self::$registerURL]) == false) {
       return '<a href="?' . self::$registerURL . '">Register a new user</a>';
     }
     else {
-      return '<a href="index.php">Back to login</a>';
+      return '<a href="' . self::$loginURL . '">Back to login</a>';
     }
   }
 
+  /**
+   * @return if user is logged in or not
+   */
   private function renderIsLoggedIn($isLoggedIn) {
     if ($isLoggedIn) {
       return '<h2>Logged in</h2>';

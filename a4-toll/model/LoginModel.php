@@ -48,8 +48,6 @@ class LoginModel {
 
 	/**
 	 * Attempts to authenticate
-	 * @param  UserCredentials $uc
-	 * @return boolean
 	 */
 	public function doLogin(UserCredentials $uc) {
 		
@@ -81,8 +79,6 @@ class LoginModel {
 
 	/**
 	 * renew the temporary credentials
-	 * 
-	 * @param  UserClient $userClient 
 	 */
 	public function renew(UserClient $userClient) {
 		if ($this->isLoggedIn($userClient)) {

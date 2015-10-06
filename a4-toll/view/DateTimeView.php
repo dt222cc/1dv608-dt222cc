@@ -2,9 +2,11 @@
 
 class DateTimeView {
 
-	public function show() {
+	public function __construct() {
 		date_default_timezone_set("Europe/Stockholm");
-
+	}
+	
+	public function show() {
 		$dayOfWeek = date("l");
 		$dayOfMonth = date("jS");
 		$month = date("F");
