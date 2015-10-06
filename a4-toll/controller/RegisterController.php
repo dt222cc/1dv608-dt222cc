@@ -3,6 +3,8 @@
 require_once("model/RegisterModel.php");
 require_once("view/RegisterView.php");
 
+require_once('exceptions/UserAlreadyExistsException.php');
+
 class RegisterController {
 
 	private $model;
@@ -14,14 +16,23 @@ class RegisterController {
 	}
 
 	public function doControl() {
-		// Not sure on how to do things here, might have to do some refactoring
-		// Missing lots of details for the moment (placeholders)
-		if ($this->view->userWantsToRegister()) {
-				if ($this->model->doRegistration() == true) {
-					// $this->view->setRegistrationSucceeded();
-				} else {
-					// $this->view->setRegistrationFailed();
+		try {
+			if ($this->view->userWantsToRegister() === true) {
+				if ($this->view->validateRegisterForm() === true) {
+					// Get the usercredentials and have them stripped of "some" special characters
+					$uc = $this->view->getRegisterCredentials();
+					$name = $this->view->removeSomeSpecialCharacters($uc->getUsername());
+					$pw = $this->view->removeSomeSpecialCharacters($uc->getPassword());
+					// If the registration was successful, redirect to login form and display the correct message
+					if ($this->model->doRegister($name, $pw) === true) {
+						$this->view->setRegisterSucceeded();
+					}
 				}
 			}
+		}
+		// If user already exists, display the correct message
+		catch (UserAlreadyExistsException $e) {
+			$this->view->setUserAlreadyExists();
+		}
 	}
 }
