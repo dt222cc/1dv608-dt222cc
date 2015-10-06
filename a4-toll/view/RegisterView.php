@@ -55,6 +55,9 @@ class RegisterView {
 	}
 
 	public function removeSomeSpecialCharacters($string) {
+		// Remove HTML TAGs
+		$string = strip_tags($string);
+		// Only these characters are allowed, remove everything else
 		return preg_replace('/[^A-Za-z0-9#._-]/', '', $string);
 	}
 
@@ -118,7 +121,7 @@ class RegisterView {
 					<legend>Register a new user - Write username and password</legend>
 					<p id='".self::$messageId."'>$message</p>
 					<label for='".self::$name."'>Username :</label>
-					<input type='text' size='20' name='".self::$name."' id='".self::$name."' value='".preg_replace('/[^A-Za-z0-9\-._#&$]/', '', $this->getUsername())."'/>
+					<input type='text' size='20' name='".self::$name."' id='".self::$name."' value='".$this->removeSomeSpecialCharacters($this->getUsername())."'/>
 					<br>
 					<label for='".self::$password."'>Password :</label>
 					<input type='password' size='20' name='".self::$password."' id='".self::$password."'/>
