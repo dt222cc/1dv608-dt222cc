@@ -14,10 +14,7 @@ class RegisterView {
 	private static $minPassword = 6;
 	private static $minUserName = 3;
 
-	/**
-	 * view state set by controller through setters
-	 * @var boolean
-	 */
+	// View state set by controller through setters
 	private $registerHasSucceeded = false;
 	private $userAlreadyExists = false;
 
@@ -31,16 +28,15 @@ class RegisterView {
 
 	/**
 	 * Accessor method for register credentials
-	 * @return \model\RegisterCredentials
+	 * @return model/RegisterCredentials
 	 */
 	public function getRegisterCredentials() {
 		return new RegisterCredentials($this->getUserName(), $this->getPassword());
 	}
 
 	/**
-	 * Tell the view that register succeeded so that it can show correct message
-	 *
-	 * call this if register succeeds
+	 * Tell the view that register succeeded/failed so that it can show correct message
+	 * @return boolean
 	 */
 	public function setRegisterSucceeded() {
 		$this->registerHasSucceeded = true;
@@ -50,10 +46,18 @@ class RegisterView {
 		$this->userAlreadyExists = true;
 	}
 
+	/**
+	 * Checks if the form was just posted
+	 * @return boolean
+	 */
 	public function userWantsToRegister() {
 		return isset($_POST[self::$register]);
 	}
 
+	/**
+	 * Remove characters that are not allowed
+	 * @return string
+	 */
 	public function removeSomeSpecialCharacters($string) {
 		// Remove HTML TAGs
 		$string = strip_tags($string);
@@ -70,34 +74,36 @@ class RegisterView {
 	 */
 	public function response() {
 		$message = "";
-        if ($this->registerHasSucceeded === true) {
+		if ($this->registerHasSucceeded === true) {
 			$message = "Registered new user.";
 			$this->redirect($message);
-        }
-        else if ($this->userAlreadyExists === true) {
-            $message = "User exists, pick another username.";
-        }
+		}
+		else if ($this->userAlreadyExists === true) {
+			$message = "User exists, pick another username.";
+		}
 		else {
 			if ($this->userWantsToRegister() === true) {
 				if (strlen($this->getUsername()) < 3) {
-		            $message .= "Username has too few characters, at least 3 characters.<br>";
+					$message .= "Username has too few characters, at least 3 characters.<br>";
 				}
-		        if (strlen($this->getPassword()) < 6) {
-		            $message .= "Password has too few characters, at least 6 characters.<br>";
-		        }
-		        if ($this->getPassword() !== $this->getPasswordRepeat()) {
-		            $message .= "Passwords do not match.<br>";
-		        }
-		        if ($this->removeSomeSpecialCharacters($this->getUsername()) !== $this->getUsername()) {
-		            $message .= "Username contains invalid characters.";
-		        }
+				if (strlen($this->getPassword()) < 6) {
+					$message .= "Password has too few characters, at least 6 characters.<br>";
+				}
+				if ($this->getPassword() !== $this->getPasswordRepeat()) {
+					$message .= "Passwords do not match.<br>";
+				}
+				if ($this->removeSomeSpecialCharacters($this->getUsername()) !== $this->getUsername()) {
+					$message .= "Username contains invalid characters.";
+				}
 			}
 		}
 		return $this->generateRegisterFormHTML($message);
 	}
 
-	// I'm not sure where the fault is but when i try to register there's no validation and the user get's greated
-	// so i made this method to prevent that, opt: refactor the method above ($message to private member, if null, etc)
+	/**
+	 * Have to validate form data when doing the registration on the model
+	 * @return boolean
+	 */
 	public function validateRegisterForm() {
 		if (strlen($this->getUsername()) < 3 ||
 			strlen($this->getPassword()) < 6 ||
@@ -136,7 +142,9 @@ class RegisterView {
 		";
 	}
 
-	// Redirect to the login form with successful registration message
+	/**
+	 * Redirect to the login form with successful registration message
+	 */
 	private function redirect($message) {
 		$_SESSION[self::$sessionSaveLocation] = $message;
 		$this->actualLink = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];

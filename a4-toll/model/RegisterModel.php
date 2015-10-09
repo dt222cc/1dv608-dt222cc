@@ -5,7 +5,7 @@ require_once("RegisterDAL.php");
 
 class RegisterModel {
 
-	private $tempCredentials = null;
+	public static $newUsername = "RegisterModel::newUsername";
 
 	/**
 	 * Attempts to registrate user
@@ -21,6 +21,8 @@ class RegisterModel {
 			// Add the new user to the database with the password hashed/encrypted
 			$hashed_password = crypt($password); // let the salt be automatically generated
 			$this->db->add($username, $hashed_password);
+			// Store the new username to session for loginview to retrieve
+			$_SESSION[self::$newUsername] = $username;
 			return true;
 		} else {
 			throw new UserAlreadyExistsException();

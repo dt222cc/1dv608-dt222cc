@@ -240,9 +240,19 @@ class LoginView {
 		";
 	}
 
+	/**
+	 * Return username from failed login attempt or the username from successful registration
+	 */
 	private function getRequestUserName() {
-		if (isset($_POST[self::$name]))
+		if (isset($_POST[self::$name])) {
 			return trim($_POST[self::$name]);
+		}
+
+		else if (isset($_SESSION[RegisterModel::$newUsername])) {
+			$username = $_SESSION[RegisterModel::$newUsername];
+			unset($_SESSION[RegisterModel::$newUsername]);
+			return $username;
+		}
 		return "";
 	}
 
