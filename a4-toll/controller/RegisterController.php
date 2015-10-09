@@ -19,12 +19,8 @@ class RegisterController {
 		try {
 			if ($this->view->userWantsToRegister() === true) {
 				if ($this->view->validateRegisterForm() === true) {
-					// Get the usercredentials and have them stripped of "some" special characters
-					$uc = $this->view->getRegisterCredentials();
-					$name = $this->view->removeSomeSpecialCharacters($uc->getUsername());
-					$pw = $this->view->removeSomeSpecialCharacters($uc->getPassword());
-					// If the registration was successful, redirect to login form and display the correct message
-					if ($this->model->doRegister($name, $pw) === true) {
+					$credentials = $this->view->getRegisterCredentials();
+					if ($this->model->doRegister($credentials) === true) {
 						$this->view->setRegisterSucceeded();
 					}
 				}

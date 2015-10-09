@@ -22,7 +22,7 @@ class RegisterCredentials {
     }
 
     private function removeSpecialChars($string) {
-        $string = str_replace(' ', '-', $string);
+        $string = strip_tags($string);
         return preg_replace('/[^A-Za-z0-9\-._#&$]/', '', $string);
     }
 }

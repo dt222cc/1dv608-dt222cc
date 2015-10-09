@@ -1,7 +1,7 @@
 <?php
 
 require_once("RegisterCredentials.php");
-require_once("RegisterDAL.php");
+require_once("DatabaseConnection.php");
 
 class RegisterModel {
 
@@ -12,15 +12,16 @@ class RegisterModel {
 	 * @param  RegisterCredentials $rc
 	 * @return boolean
 	 */
-	public function doRegister($username, $password) {
-		$this->db = new RegisterDAL();
+	public function doRegister($rc) {
+		$username = $rc->getUsername();
+		$password = $rc->getPassword();
 
-		$isUnique = $this->db->isFieldUnique($username);
+		$this->db = new DatabaseConnection();
+		$results = $this->db->getUser($username);
 
-		if ($isUnique === false) {
-			// Add the new user to the database with the password hashed/encrypted
-			$hashed_password = crypt($password); // let the salt be automatically generated
-			$this->db->add($username, $hashed_password);
+		if (count($results) == 0) {
+            $password = password_hash($password, PASSWORD_BCRYPT);
+			$this->db->add($username, $password);
 			// Store the new username to session for loginview to retrieve
 			$_SESSION[self::$newUsername] = $username;
 			return true;

@@ -5,6 +5,7 @@ require_once("TempCredentials.php");
 require_once("TempCredentialsDAL.php");
 require_once("LoggedInUser.php");
 require_once("UserClient.php");
+require_once("DatabaseConnection.php");
 
 class LoginModel {
 
@@ -50,13 +51,13 @@ class LoginModel {
 	 * Attempts to authenticate
 	 */
 	public function doLogin(UserCredentials $uc) {
-		
 		$this->tempCredentials = $this->tempDAL->load($uc->getName());
 
-		$loginByUsernameAndPassword = Settings::USERNAME === $uc->getName() && Settings::PASSWORD === $uc->getPassword();
+		$loginByUsernameAndPassword = $this->authenticate($uc->getName(), $uc->getPassword());
 		$loginByTemporaryCredentials = $this->tempCredentials != null && $this->tempCredentials->isValid($uc->getTempPassword());
+		$loginByAdmin = Settings::USERNAME === $uc->getName() && Settings::PASSWORD === $uc->getPassword();
 
-		if ( $loginByUsernameAndPassword || $loginByTemporaryCredentials) {
+		if ($loginByUsernameAndPassword || $loginByTemporaryCredentials || $loginByAdmin) {
 			$user = new LoggedInUser($uc); 
 
 			$_SESSION[self::$sessionUserLocation] = $user;
@@ -85,6 +86,21 @@ class LoginModel {
 			$user = $_SESSION[self::$sessionUserLocation];
 			$this->tempCredentials = new TempCredentials($user);
 			$this->tempDAL->save($user, $this->tempCredentials);
+		}
+	}
+
+	/**
+	 * Establish connection and see if the username and password match (fulhack)
+	 */
+	private function authenticate($username, $password) {
+		$this->db = new DatabaseConnection();
+		$results = $this->db->getUser($username);
+
+		// This does not work in the public server. 000webhost
+		if (count($results) == 2 && password_verify($password, $results[1])) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

@@ -2,7 +2,7 @@
 
 require_once("../../data/Database.php");
 
-class RegisterDAL {
+class DatabaseConnection {
 
 	private static $table = "users";
 	private static $usernameField = "username";
@@ -29,20 +29,21 @@ class RegisterDAL {
 	 * Check if the username already exists in the database
 	 * @return true if user exists || else false
 	 */
-	public function IsFieldUnique($username) {
-		$this->stmt = $this->conn->prepare("SELECT ".self::$usernameField." FROM ".self::$table." WHERE ".self::$usernameField." = ?");
+	public function getUser($username) {
+		$this->stmt = $this->conn->prepare("SELECT ".self::$usernameField.", ".self::$passwordField." FROM ".self::$table." WHERE ".self::$usernameField." = ?");
 		if ($this->stmt === FALSE) {
 			throw new Exception($this->conn->error);
 		}
 		$this->stmt->bind_param('s', $username);
 		$this->stmt->execute();
+	    $this->stmt->bind_result($name, $pass);
 		$this->stmt->store_result();
 
-		if ($this->stmt->num_rows() > 0) {
-      		return true;
-      	} else {
-	  		return false;
-      	}
+		// Fulhack
+		if ($this->stmt->num_rows() == 1) {
+			$this->stmt->fetch();
+			return [$name, $pass];
+		}
 	}
 
 	/**
