@@ -42,7 +42,7 @@ class DatabaseConnection {
 		// Fulhack
 		if ($this->stmt->num_rows() == 1) {
 			$this->stmt->fetch();
-			return [$name, $pass];
+			return array($name, $pass);
 		}
 	}
 

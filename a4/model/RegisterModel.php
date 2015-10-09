@@ -20,8 +20,8 @@ class RegisterModel {
 		$results = $this->db->getUser($username);
 
 		if (count($results) == 0) {
-            $password = password_hash($password, PASSWORD_BCRYPT);
-			$this->db->add($username, $password);
+			$hashedPassword = crypt($password);
+			$this->db->add($username, $hashedPassword);
 			// Store the new username to session for loginview to retrieve
 			$_SESSION[self::$newUsername] = $username;
 			return true;

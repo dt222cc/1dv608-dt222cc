@@ -96,9 +96,14 @@ class LoginModel {
 		$this->db = new DatabaseConnection();
 		$results = $this->db->getUser($username);
 
-		// This does not work in the public server. 000webhost
-		if (count($results) == 2 && password_verify($password, $results[1])) {
-			return true;
+		// if (count($results) == 2 && password_verify($password, $results[1])) {
+		// 	return true;
+		// } else {
+		// 	return false;
+		// }
+
+		if (count($results) == 2 && crypt($password, $results[1]) == $results[1]) {
+				return true;
 		} else {
 			return false;
 		}
