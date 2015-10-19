@@ -28,7 +28,7 @@ class Quiz
      */
     public function getQuestion()
     {
-
+		return $this->questions[0];
     }
 
     /**
