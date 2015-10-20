@@ -2,6 +2,10 @@
 
 class QuizView
 {
+	const QUIZ_SETUP = "QuizView::QuizSetup";
+	const QUIZ_SOLVE = "QuizView::QuizSolve";
+	const THEME = "Who is the author of the following quote?";
+
 	/** @var \model\Quiz */
 	private $model;
 
@@ -12,66 +16,88 @@ class QuizView
 	}
 
 	/**
-	 * Render the Quiz
+	 * Accessor method for play attempts by form
+	 *
+	 * @return boolean true if user did press play
 	 */
-	public function render()
-	{
-		date_default_timezone_set("Europe/Stockholm");
-
-		echo '<!DOCTYPE html>
-			<html>
-			<head>
-				<meta charset="utf-8">
-				<title>Project MVC Quiz-Game dt222cc</title>
-			</head>
-			<body>
-				<h1>Project MVC Quiz-Game</h1>
-				<div class="container">
-					' . $this->getResponse() . '
-				</div>
-				</body>
-			</html>
-		';
+	public function userWantsToPlay() {
+		return isset($_POST[self::QUIZ_SOLVE]);
 	}
 
-
 	/**
-	 * TODO: Quiz start page || or the question form
-	 * Handle with session or perhaps url
+	 * Genereate either the quiz setup form or the solve question form
 	 *
 	 * @return string HTML
      */
-	private function getResponse()
+	public function getResponse()
 	{
-		return $this->renderSolveQuestion();
+		// Workaround for picking correct form
+		if (isset($_POST[self::QUIZ_SETUP]) == true || isset($_POST[self::QUIZ_SOLVE]) == true) {
+			return $this->generateSolveQuestionFormHTML();
+		} else {
+			return $this->generateQuizSetupHTML();
+		}
 	}
 
-	/** @return string HTML */
-	private function renderStartQuiz()
+	/**
+	 * Some introduction and setup form for picking amount of questions to be solved.
+	 *
+	 * @return string HTML
+	 */
+	private function generateQuizSetupHTML()
 	{
-		/**
-		 * Somekind of introduction
-		 */
+
+		return "
+			<div>
+				<p>This quiz is about matching the following question with the correct solution, duh.. it's a quiz.</p>
+				<p>There will be 3 possible solutions but only one of them is correct.</p>
+				<p>Your task will be picking the correct solution with no outside help.</p>
+				<p>The theme of this Quiz is \"quotes\". Match the following quotes with the correct author.</p>
+			</div>
+
+			<form method='post'>
+				<b>Pick the amount of questions.</b>
+				<input type='radio' name='id' value='1'> 5
+				<input type='radio' name='id' value='2'> 10
+				<input type='radio' name='id' value='3'> 15
+				<input type='radio' name='id' value='4'> 20
+				<br><br>
+				<input type='submit' name='".self::QUIZ_SETUP."' value='Submit'/>
+			</form>
+		";
 	}
 
-	/** @return string HTML */
-	private function renderSolveQuestion()
+	/**
+	 * Generate form for solving the current question. Answers have a randomized order. The solution is the default 0 index
+	 *
+	 * @return string HTML
+	 */
+	private function generateSolveQuestionFormHTML()
 	{
-		/**
-		 * Build some kind of quiz form
-		 * Randomize array to solve (solution is the 0 index)
-		 */
-
-		// Testing how to retrieve the question
 		$question = $this->model->getQuestion();
-
-		$questionName = $question->getQuestion();
 		$solutions = $question->getSolutions();
-		return '
-			<p>'.$questionName.'</p>
-			<p>'.$solutions[0].'</p>
-			<p>'.$solutions[1].'</p>
-			<p>'.$solutions[2].'</p>
-		';
+
+		// Tests
+		$shuffledSolutions = $solutions;
+		shuffle($shuffledSolutions);
+
+		print_r($solutions);
+		print_r($shuffledSolutions);
+
+		$solutionsHTML = "";
+
+		// Generate the solutions for the current question
+		foreach ($shuffledSolutions as $id => $solution) {
+			$solutionsHTML .= "<input type='radio' name='id' value='".$id."'> ".$solution."<br>";
+		}
+
+		return "<form method='post'>
+				<b>".self::THEME."</b>
+				<p>".$question->getQuestion()."</p>
+				".$solutionsHTML."
+				<br>
+				<input type='submit' name='".self::QUIZ_SOLVE."' value='Submit'/>
+			</form>
+		";
 	}
 }

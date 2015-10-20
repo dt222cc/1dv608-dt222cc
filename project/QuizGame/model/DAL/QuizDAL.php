@@ -7,7 +7,7 @@ class QuizDAL
      *
      * @return Question[] $questions
      */
-    public function loadQuiz()
+    public function getQuestions()
     {
         $questions = array();
 

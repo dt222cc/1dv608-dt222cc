@@ -3,7 +3,7 @@
 /** Question entity */
 class Question
 {
-    private $id;
+    // private $id;
     private $question;
     private $solutions;
     private $correctIndex;
@@ -18,22 +18,23 @@ class Question
         $this->question = $question;
         $this->solutions = $solutions;
         $this->correctIndex = $correctSolutionIndex;
-        // Index must be set for the solutions, ex 0,1,2,3 with 4 solutions
-        if (!isset($this->solutions[$this->correctIndex])) {
+        // The correct index must be set for the solutions, preferably 0
+        if (!isset($this->solutions[$this->correctIndex]))
+        {
             throw new InvalidArgumentException('Invalid index');
         }
     }
 
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
+    // public function setId($id)
+    // {
+    //     $this->id = $id;
+    // }
 
-    /** @return int */
-    public function getId()
-    {
-        return $this->id;
-    }
+    // /** @return int */
+    // public function getId()
+    // {
+    //     return $this->id;
+    // }
 
     /** @return string */
     public function getQuestion()
@@ -47,7 +48,7 @@ class Question
         return $this->solutions;
     }
 
-    /** @return int */
+    /** @return string */
     public function getCorrectSolution()
     {
         return $this->solutions[$this->correctIndex];

@@ -2,15 +2,26 @@
 
 class Quiz
 {
+    const CURRENT_QUESTION = 'Quiz::CurrentQuestion';
+    const CORRECT = 'Quiz::Correct';
+    const INCORRECT = 'Quiz::Incorrect';
+
     /** @var string[] */
     private $questions;
 
     /**
+     * Initiate/Setting up the game (sessions and stuff)
+     *
      * @param Question[] $questions
      */
     public function __construct(array $questions)
     {
         $this->questions = $questions;
+
+        // Move these later
+        $_SESSION[self::CURRENT_QUESTION] = 0;
+        $_SESSION[self::CORRECT] = 0;
+        $_SESSION[self::INCORRECT] = 0;
     }
 
     /**
@@ -18,7 +29,9 @@ class Quiz
      */
     public function startQuiz()
     {
-
+        // $_SESSION[self::CURRENT_QUESTION] = 0;
+        // $_SESSION[self::CORRECT] = 0;
+        // $_SESSION[self::INCORRECT] = 0;
     }
 
     /**
@@ -28,7 +41,9 @@ class Quiz
      */
     public function getQuestion()
     {
-		return $this->questions[0];
+        $currentQuestion = $this->getCurrentQuestionId();
+
+        return $this->questions[$currentQuestion];
     }
 
     /**
@@ -37,7 +52,10 @@ class Quiz
      */
     public function checkSolution($id)
     {
-
+        // Check if correct
+        // Add result to results
+        // After checking the solution, the counter increases by one
+        $_SESSION[self::CURRENT_QUESTION] = $this->getCurrentQuestionId() + 1;
     }
 
     /**
@@ -47,7 +65,7 @@ class Quiz
      */
     public function isOver()
     {
-
+        return false;
     }
 
     /**
@@ -67,6 +85,23 @@ class Quiz
      */
     private function addResult($isCorrect)
     {
+        if ($isCorrect)
+        {
+            $_SESSION[self::CORRECT] += 1;
+        }
+        else
+        {
+            $_SESSION[self::INCORRECT] += 1;
+        }
+    }
 
+    /**
+     * The idea is that we use the session variable to check which question we are at.
+     *
+     * @return Result
+     */
+    private function getCurrentQuestionId()
+    {
+        return $_SESSION[self::CURRENT_QUESTION];
     }
 }
