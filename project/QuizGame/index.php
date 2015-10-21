@@ -17,17 +17,19 @@ if (Settings::DISPLAY_ERRORS) {
 	ini_set('display_errors', 'ON');
 }
 
+// YOU WILL PROBABLY REMOVE THIS (ADDES THIS FOR THE DEVELOPING)
+date_default_timezone_set("Europe/Stockholm");
+
 // SESSION MUST BE STARTED BEFORE ..
 session_start();
 
 // DEPENDENCY INJECTIONS
-$dal = new QuizDAL();
-$m = new Quiz($dal->getQuestions());
+$m = new Quiz();
 $v = new QuizView($m);
 $c = new QuizController($m, $v);
 
-// 
-$c->doControl();
+// HADNLE THE QUIZ SERVICE
+$c->doQuiz();
 
 // GENERATE OUTPUT
 $lv = new LayoutView();

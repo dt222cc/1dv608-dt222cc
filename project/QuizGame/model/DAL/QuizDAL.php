@@ -14,13 +14,11 @@ class QuizDAL
         $conn = $this->establishConnection();
         $query = "SELECT question, solution_1, solution_2, solution_3, correct_solution_index FROM quiz_game";
 
-        if ($stmt = $conn->prepare($query))
-        {
+        if ($stmt = $conn->prepare($query)) {
             $stmt->execute();
             $stmt->bind_result($question, $solution1, $solution2, $solution3, $correctSolutionIndex);
 
-            while ($stmt->fetch())
-            {
+            while ($stmt->fetch()) {
                 $currentQuestion = new Question($question, array($solution1, $solution2, $solution3), $correctSolutionIndex);
                 $questions[] = $currentQuestion;
             }
@@ -53,7 +51,6 @@ class QuizDAL
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-
         return $conn;
     }
 }

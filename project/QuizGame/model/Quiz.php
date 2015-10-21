@@ -5,33 +5,36 @@ class Quiz
     const CURRENT_QUESTION = 'Quiz::CurrentQuestion';
     const CORRECT = 'Quiz::Correct';
     const INCORRECT = 'Quiz::Incorrect';
+    const TOTALQUESTIONS = 'Quiz::TotalQuestions';
 
-    /** @var string[] */
+    /** @var QuizDAL */
+    private $quizDAL;
+
+    /** @var Question[] */
     private $questions;
 
     /**
-     * Initiate/Setting up the game (sessions and stuff)
+     * Collect questions from database (this seems to be called after every post, because of this I cannot shuffle the questions)
      *
      * @param Question[] $questions
      */
-    public function __construct(array $questions)
+    public function __construct()
     {
-        $this->questions = $questions;
-
-        // Move these later
-        $_SESSION[self::CURRENT_QUESTION] = 0;
-        $_SESSION[self::CORRECT] = 0;
-        $_SESSION[self::INCORRECT] = 0;
+        $this->quizDAL = new QuizDAL();
+        $this->questions = $this->quizDAL->getQuestions();
     }
 
     /**
-     * Initiate/Setting up the game (sessions and stuff)
+     * Initiate/Setting up the game (reset sessions and set the limit to the total questions to be solved)
+     *
+     * @param int
      */
-    public function startQuiz()
+    public function startQuiz($totalQuestions)
     {
-        // $_SESSION[self::CURRENT_QUESTION] = 0;
-        // $_SESSION[self::CORRECT] = 0;
-        // $_SESSION[self::INCORRECT] = 0;
+        $_SESSION[self::CURRENT_QUESTION] = 0;
+        $_SESSION[self::CORRECT] = 0;
+        $_SESSION[self::INCORRECT] = 0;
+        $_SESSION[self::TOTALQUESTIONS] = $totalQuestions;
     }
 
     /**
@@ -41,30 +44,30 @@ class Quiz
      */
     public function getQuestion()
     {
-        $currentQuestion = $this->getCurrentQuestionId();
-
-        return $this->questions[$currentQuestion];
+        return $this->questions[$this->getCurrentQuestionId()];
     }
 
     /**
-     * @param int
+     * Check if the given solution is correct
+     *
+     * @param string
      * @return bool
      */
-    public function checkSolution($id)
+    public function checkSolution($solutionToValidate)
     {
-        // Check if correct
-        // Add result to results
-        // After checking the solution, the counter increases by one
-        $_SESSION[self::CURRENT_QUESTION] = $this->getCurrentQuestionId() + 1;
+        return $this->getQuestion()->isCorrect($solutionToValidate);
     }
 
     /**
-     * Game is over when there is no more questions left
+     * Game is over when the total questions threshold have been reached
      *
      * @return bool
      */
     public function isOver()
     {
+        if ($this->getCurrentQuestionId() == $_SESSION[self::TOTALQUESTIONS]) {
+            return true;
+        }
         return false;
     }
 
@@ -75,7 +78,7 @@ class Quiz
      */
     public function getResult()
     {
-
+        return new Result(intval($_SESSION[self::CORRECT]), intval($_SESSION[self::INCORRECT]));
     }
 
     /**
@@ -83,25 +86,24 @@ class Quiz
      *
      * @param bool
      */
-    private function addResult($isCorrect)
+    public function addResult($isCorrect)
     {
-        if ($isCorrect)
-        {
+        $_SESSION[self::CURRENT_QUESTION] = $this->getCurrentQuestionId() + 1;
+
+        if ($isCorrect) {
             $_SESSION[self::CORRECT] += 1;
-        }
-        else
-        {
+        } else {
             $_SESSION[self::INCORRECT] += 1;
         }
     }
 
     /**
-     * The idea is that we use the session variable to check which question we are at.
+     * We use the session variable to check which question we are at.
      *
-     * @return Result
+     * @return int
      */
     private function getCurrentQuestionId()
     {
-        return $_SESSION[self::CURRENT_QUESTION];
+        return intval($_SESSION[self::CURRENT_QUESTION]);
     }
 }

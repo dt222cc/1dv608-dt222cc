@@ -2,41 +2,84 @@
 
 class QuizView
 {
-	const QUIZ_SETUP = "QuizView::QuizSetup";
-	const QUIZ_SOLVE = "QuizView::QuizSolve";
+	const QUIZ_SETUP = "QuizView::Setup";
+	const QUIZ_QUESTIONS = "QuizView::Questions";
+	const QUIZ_SOLVE = "QuizView::Solve";
+	const QUIZ_SOLUTION = "QuizView::RadioSolution";
 	const THEME = "Who is the author of the following quote?";
 
-	/** @var \model\Quiz */
+    private $isOver = false;
+
+	/** @var Quiz */
 	private $model;
 
-	/** @param \model\Quiz */
+	/** @param Quiz */
 	public function __construct(Quiz $quiz)
 	{
 		$this->model = $quiz;
 	}
 
+    public function setIsOver()
+    {
+        $this->isOver = true;
+    }
+
 	/**
-	 * Accessor method for play attempts by form
+	 * Accessor methods for form submits
 	 *
-	 * @return boolean true if user did press play
+	 * @return boolean true if user did press submit
 	 */
-	public function userWantsToPlay() {
-		return isset($_POST[self::QUIZ_SOLVE]);
+	public function didUserWantToPlay()
+	{
+		return isset($_POST[self::QUIZ_SETUP]);
+	}
+
+    public function didUserSolveAQuestion()
+	{
+	return isset($_POST[self::QUIZ_SOLVE]);
+	}
+
+    /**
+    * Accessor method for getting the user picked solution
+    *
+    * @return string
+    */
+    public function getAmountOfQuestions()
+    {
+        if (isset($_POST[self::QUIZ_QUESTIONS])) {
+            return $_POST[self::QUIZ_QUESTIONS];
+        }
+        return "";
+    }
+
+    /**
+	* Accessor method for getting the user picked solution
+	*
+	* @return string
+	*/
+	public function getSolution()
+	{
+		if (isset($_POST[self::QUIZ_SOLUTION])) {
+			return $_POST[self::QUIZ_SOLUTION];
+		}
+		return "";
 	}
 
 	/**
-	 * Genereate either the quiz setup form or the solve question form
+	 * Generate either the quiz setup form or the solve question form
 	 *
 	 * @return string HTML
      */
 	public function getResponse()
 	{
+        if ($this->isOver) {
+            return $this->generateQuizResultsHTML();
+        }
 		// Workaround for picking correct form
-		if (isset($_POST[self::QUIZ_SETUP]) == true || isset($_POST[self::QUIZ_SOLVE]) == true) {
+		else if (isset($_POST[self::QUIZ_SETUP]) == true || isset($_POST[self::QUIZ_SOLVE]) == true) {
 			return $this->generateSolveQuestionFormHTML();
-		} else {
-			return $this->generateQuizSetupHTML();
 		}
+		return $this->generateQuizSetupHTML();
 	}
 
 	/**
@@ -46,21 +89,19 @@ class QuizView
 	 */
 	private function generateQuizSetupHTML()
 	{
-
 		return "
 			<div>
 				<p>This quiz is about matching the following question with the correct solution, duh.. it's a quiz.</p>
 				<p>There will be 3 possible solutions but only one of them is correct.</p>
 				<p>Your task will be picking the correct solution with no outside help.</p>
-				<p>The theme of this Quiz is \"quotes\". Match the following quotes with the correct author.</p>
 			</div>
 
 			<form method='post'>
 				<b>Pick the amount of questions.</b>
-				<input type='radio' name='id' value='1'> 5
-				<input type='radio' name='id' value='2'> 10
-				<input type='radio' name='id' value='3'> 15
-				<input type='radio' name='id' value='4'> 20
+				<input type='radio' name='".self::QUIZ_QUESTIONS."' value='5' checked> 5
+				<input type='radio' name='".self::QUIZ_QUESTIONS."' value='10'> 10
+				<input type='radio' name='".self::QUIZ_QUESTIONS."' value='15'> 15
+				<input type='radio' name='".self::QUIZ_QUESTIONS."' value='20'> 20
 				<br><br>
 				<input type='submit' name='".self::QUIZ_SETUP."' value='Submit'/>
 			</form>
@@ -76,28 +117,33 @@ class QuizView
 	{
 		$question = $this->model->getQuestion();
 		$solutions = $question->getSolutions();
-
-		// Tests
-		$shuffledSolutions = $solutions;
-		shuffle($shuffledSolutions);
-
-		print_r($solutions);
-		print_r($shuffledSolutions);
-
-		$solutionsHTML = "";
-
-		// Generate the solutions for the current question
-		foreach ($shuffledSolutions as $id => $solution) {
-			$solutionsHTML .= "<input type='radio' name='id' value='".$id."'> ".$solution."<br>";
-		}
+        shuffle($solutions);
 
 		return "<form method='post'>
 				<b>".self::THEME."</b>
 				<p>".$question->getQuestion()."</p>
-				".$solutionsHTML."
+				<input type='radio' name='".self::QUIZ_SOLUTION."' value='".$solutions[0]."' checked>" .$solutions[0]."<br>
+				<input type='radio' name='".self::QUIZ_SOLUTION."' value='".$solutions[1]."'>" .$solutions[1]."<br>
+				<input type='radio' name='".self::QUIZ_SOLUTION."' value='".$solutions[2]."'>" .$solutions[2]."<br>
 				<br>
 				<input type='submit' name='".self::QUIZ_SOLVE."' value='Submit'/>
 			</form>
 		";
 	}
+
+    private function generateQuizResultsHTML()
+    {
+        $result = $this->model->getResult();
+        $correct = $result->getCorrect();
+        $incorrect = $result->getIncorrect();
+
+        return "
+			<div>
+				<b>Your results: </b>
+				<p>- Correct: ".$correct."</p>
+				<p>- Incorrect: ".$incorrect."</p>
+                <a href='index.php'>Play again</a>
+			</div>
+		";
+    }
 }

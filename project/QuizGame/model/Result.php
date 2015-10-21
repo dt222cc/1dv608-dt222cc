@@ -2,28 +2,29 @@
 
 class Result
 {
+    /** @var int */
     private $correct;
     private $incorrect;
 
-    /** @param session variables / int */
+    /**
+     * @param int
+     * @param int
+     */
     public function __construct($correct, $incorrect)
     {
         $this->correct = $correct;
         $this->incorrect = $incorrect;
     }
 
+    /** @return int */
     public function getCorrect()
     {
         return $this->correct;
     }
 
+    /** @return int */
     public function getIncorrect()
     {
         return $this->incorrect;
-    }
-
-    public function getTotal()
-    {
-        return $this->correct + $this->incorrect;
     }
 }

@@ -19,22 +19,10 @@ class Question
         $this->solutions = $solutions;
         $this->correctIndex = $correctSolutionIndex;
         // The correct index must be set for the solutions, preferably 0
-        if (!isset($this->solutions[$this->correctIndex]))
-        {
+        if (!isset($this->solutions[$this->correctIndex])) {
             throw new InvalidArgumentException('Invalid index');
         }
     }
-
-    // public function setId($id)
-    // {
-    //     $this->id = $id;
-    // }
-
-    // /** @return int */
-    // public function getId()
-    // {
-    //     return $this->id;
-    // }
 
     /** @return string */
     public function getQuestion()
@@ -42,21 +30,15 @@ class Question
         return $this->question;
     }
 
-    /** @return string[] */
+    /** @return string[]  */
     public function getSolutions()
     {
         return $this->solutions;
     }
 
-    /** @return string */
-    public function getCorrectSolution()
-    {
-        return $this->solutions[$this->correctIndex];
-    }
-
     /** @return bool */
-    public function isCorrect($solutionId)
+    public function isCorrect($solutionToValidate)
     {
-        return $this->correctIndex == $solutionId;
+        return $this->solutions[$this->correctIndex] == $solutionToValidate;
     }
 }

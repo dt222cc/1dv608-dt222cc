@@ -4,11 +4,11 @@ class LayoutView
 {
 	/**
 	 * Render the Layout
+	 *
+	 * @param /view/QuizView
 	 */
 	public function render(QuizView $qv)
 	{
-		date_default_timezone_set("Europe/Stockholm");
-
 		echo '<!DOCTYPE html>
 			<html>
 			<head>
