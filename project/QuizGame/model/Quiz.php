@@ -2,39 +2,34 @@
 
 class Quiz
 {
+    const MYQUESTIONS = 'Quiz::MyQuestions';
+    const TOTALQUESTIONS = 'Quiz::TotalQuestions';
     const CURRENT_QUESTION = 'Quiz::CurrentQuestion';
     const CORRECT = 'Quiz::Correct';
     const INCORRECT = 'Quiz::Incorrect';
-    const TOTALQUESTIONS = 'Quiz::TotalQuestions';
-
-    /** @var QuizDAL */
-    private $quizDAL;
-
-    /** @var Question[] */
-    private $questions;
 
     /**
-     * Collect questions from database (this seems to be called after every post, because of this I cannot shuffle the questions)
-     *
-     * @param Question[] $questions
-     */
-    public function __construct()
-    {
-        $this->quizDAL = new QuizDAL();
-        $this->questions = $this->quizDAL->getQuestions();
-    }
-
-    /**
-     * Initiate/Setting up the game (reset sessions and set the limit to the total questions to be solved)
+     * Initiate/Setting up the game
      *
      * @param int
      */
     public function startQuiz($totalQuestions)
     {
+        // Free all sessions when starting a new quiz (To retrieve new questions)
+        session_unset();
+
         $_SESSION[self::CURRENT_QUESTION] = 0;
         $_SESSION[self::CORRECT] = 0;
         $_SESSION[self::INCORRECT] = 0;
         $_SESSION[self::TOTALQUESTIONS] = $totalQuestions;
+
+        // Retrieve questions from the database and store it to session
+        if (!isset($_SESSION[self::MYQUESTIONS])) {
+            $quizDAL = new QuizDAL();
+            $questions = $quizDAL->getQuestions($totalQuestions);
+            shuffle($questions);
+            $_SESSION[self::MYQUESTIONS] = $questions;
+        }
     }
 
     /**
@@ -44,7 +39,7 @@ class Quiz
      */
     public function getQuestion()
     {
-        return $this->questions[$this->getCurrentQuestionId()];
+        return $_SESSION[self::MYQUESTIONS][$this->getCurrentQuestionId()];
     }
 
     /**
@@ -65,10 +60,7 @@ class Quiz
      */
     public function isOver()
     {
-        if ($this->getCurrentQuestionId() == $_SESSION[self::TOTALQUESTIONS]) {
-            return true;
-        }
-        return false;
+        return $this->getCurrentQuestionId() == $_SESSION[self::TOTALQUESTIONS];
     }
 
     /**

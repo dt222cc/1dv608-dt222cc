@@ -5,19 +5,21 @@ class QuizDAL
     /**
      * Load the quiz, get all questions from storage like a database
      *
+     * @param int
      * @return Question[] $questions
      */
-    public function getQuestions()
+    public function getQuestions($limit)
     {
         $questions = array();
 
         $conn = $this->establishConnection();
-        $query = "SELECT question, solution_1, solution_2, solution_3, correct_solution_index FROM quiz_game";
+
+        // RAND() works for this project, when there's not so much rows in the database.
+        $query = "SELECT * FROM quiz_game ORDER BY RAND() LIMIT " . $limit;
 
         if ($stmt = $conn->prepare($query)) {
             $stmt->execute();
-            $stmt->bind_result($question, $solution1, $solution2, $solution3, $correctSolutionIndex);
-
+            $stmt->bind_result($id, $question, $solution1, $solution2, $solution3, $correctSolutionIndex);
             while ($stmt->fetch()) {
                 $currentQuestion = new Question($question, array($solution1, $solution2, $solution3), $correctSolutionIndex);
                 $questions[] = $currentQuestion;
@@ -36,6 +38,8 @@ class QuizDAL
     public function saveQuiz(array $questions)
     {
         // Placeholder, might add option to add questions from the page with somekind of form (admin only)
+        $conn = $this->establishConnection();
+
     }
 
     /**

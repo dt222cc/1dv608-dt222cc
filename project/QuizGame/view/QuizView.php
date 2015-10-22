@@ -19,6 +19,9 @@ class QuizView
 		$this->model = $quiz;
 	}
 
+	/**
+	 * Set game is over
+	 */
     public function setIsOver()
     {
         $this->isOver = true;
@@ -36,20 +39,17 @@ class QuizView
 
     public function didUserSolveAQuestion()
 	{
-	return isset($_POST[self::QUIZ_SOLVE]);
+		return isset($_POST[self::QUIZ_SOLVE]);
 	}
 
     /**
-    * Accessor method for getting the user picked solution
+    * Accessor method for getting the amount of questions to fetch from database
     *
-    * @return string
+    * @return int
     */
     public function getAmountOfQuestions()
     {
-        if (isset($_POST[self::QUIZ_QUESTIONS])) {
-            return $_POST[self::QUIZ_QUESTIONS];
-        }
-        return "";
+        return intval($_POST[self::QUIZ_QUESTIONS]);
     }
 
     /**
@@ -59,10 +59,7 @@ class QuizView
 	*/
 	public function getSolution()
 	{
-		if (isset($_POST[self::QUIZ_SOLUTION])) {
-			return $_POST[self::QUIZ_SOLUTION];
-		}
-		return "";
+		return $_POST[self::QUIZ_SOLUTION];
 	}
 
 	/**
@@ -109,7 +106,7 @@ class QuizView
 	}
 
 	/**
-	 * Generate form for solving the current question. Answers have a randomized order. The solution is the default 0 index
+	 * Generate form for solving the current question. Answers have a randomized order.
 	 *
 	 * @return string HTML
 	 */
@@ -124,16 +121,19 @@ class QuizView
 				<p>".$question->getQuestion()."</p>
 				<input type='radio' name='".self::QUIZ_SOLUTION."' value='".$solutions[0]."' checked>" .$solutions[0]."<br>
 				<input type='radio' name='".self::QUIZ_SOLUTION."' value='".$solutions[1]."'>" .$solutions[1]."<br>
-				<input type='radio' name='".self::QUIZ_SOLUTION."' value='".$solutions[2]."'>" .$solutions[2]."<br>
-				<br>
+				<input type='radio' name='".self::QUIZ_SOLUTION."' value='".$solutions[2]."'>" .$solutions[2]."<br><br>
 				<input type='submit' name='".self::QUIZ_SOLVE."' value='Submit'/>
 			</form>
 		";
 	}
 
+	/**
+	 * Generate the results
+	 *
+	 * @return string HTML
+	 */
     private function generateQuizResultsHTML()
     {
-        $result = $this->model->getResult();
         $correct = $result->getCorrect();
         $incorrect = $result->getIncorrect();
 

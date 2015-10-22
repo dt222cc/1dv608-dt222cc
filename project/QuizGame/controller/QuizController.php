@@ -28,7 +28,7 @@ class QuizController
 	{
         if ($this->view->didUserWantToPlay()) {
             $amountOfQuestions = $this->view->getAmountOfQuestions();
-            $this->model->startQuiz(intval($amountOfQuestions));
+            $this->model->startQuiz($amountOfQuestions);
         }
 
 		if ($this->view->didUserSolveAQuestion()) {
