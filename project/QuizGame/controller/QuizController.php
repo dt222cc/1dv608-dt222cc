@@ -4,7 +4,7 @@ class QuizController
 {
 	/** @var Quiz */
 	private $model;
-	
+
     /** @var QuizView */
 	private $view;
 
@@ -39,5 +39,12 @@ class QuizController
                 $this->view->setIsOver();
 			}
 		}
+
+        if ($this->view->didUserWantToAddNewQuestion()) {
+            if ($this->view->validateNewQuestion() == "") {
+                $theNewQuestion = $this->view->getTheNewQuestionToAdd();
+                var_dump($theNewQuestion);
+            }
+        }
 	}
 }

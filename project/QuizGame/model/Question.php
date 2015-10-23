@@ -15,16 +15,6 @@ class Question
      */
     public function __construct($question, array $solutions, $correctSolutionIndex)
     {
-        if (count($solutions) != 3) {
-            throw new InvalidArgumentException('Invalid array size, should be 3');
-        }
-        if (!isset($solutions[$correctSolutionIndex])) {
-            throw new InvalidArgumentException('Invalid index');
-        }
-
-        $question = strip_tags($question);
-        $question = preg_replace("/[^A-Za-z0-9#._;:,'-]/", '', $question);
-
         $this->question = $question;
         $this->solutions = $solutions;
         $this->correctIndex = $correctSolutionIndex;
