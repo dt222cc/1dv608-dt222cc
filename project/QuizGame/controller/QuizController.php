@@ -26,10 +26,7 @@ class QuizController
      */
     public function doQuiz()
     {
-        if ($this->model->isOver()) {
-            $this->view->setIsOver();
-        }
-        else if ($this->view->didUserWantToPlay()) {
+        if ($this->view->didUserWantToPlay()) {
             $amountOfQuestions = $this->view->getAmountOfQuestions();
             $this->model->startQuiz($amountOfQuestions);
         }
@@ -37,11 +34,15 @@ class QuizController
             $solutionToValidate = $this->view->getSolution();
             $isCorrect = $this->model->checkSolution($solutionToValidate);
             $this->model->addResult($isCorrect);
+
+            if ($this->model->isOver()) {
+                $this->view->setIsOver();
+            }
         }
         else if ($this->view->didUserWantToAddNewQuestion()) {
             if ($this->view->validateNewQuestion() == "") {
                 $theNewQuestion = $this->view->getTheNewQuestionToAdd();
-                var_dump($theNewQuestion);
+                $this->model->addNewQuestionToDatabase($theNewQuestion);
             }
         }
     }
