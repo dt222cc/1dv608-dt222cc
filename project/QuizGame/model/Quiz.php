@@ -60,7 +60,7 @@ class Quiz
      */
     public function isOver()
     {
-        return $this->getCurrentQuestionId() == $_SESSION[self::TOTALQUESTIONS];
+        return $this->getCurrentQuestionId() >= $_SESSION[self::TOTALQUESTIONS];
     }
 
     /**
@@ -87,6 +87,17 @@ class Quiz
         } else {
             $_SESSION[self::INCORRECT] += 1;
         }
+    }
+
+    /**
+     * Try to add the newly created question to the database
+     *
+     * @param Question
+     */
+    public function addNewQuestionToDatabase(Question $questionToAdd)
+    {
+        $quizDAL = new QuizDAL();
+        return $quizDAL->saveQuestion($questionToAdd);
     }
 
     /**

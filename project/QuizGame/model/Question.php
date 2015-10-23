@@ -32,6 +32,12 @@ class Question
         return $this->solutions;
     }
 
+    /** @return int */
+    public function getCorrectSolutionIndex()
+    {
+        return $this->correctIndex;
+    }
+
     /** @return bool */
     public function isCorrect($solutionToValidate)
     {

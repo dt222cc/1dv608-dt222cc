@@ -42,7 +42,15 @@ class QuizController
         else if ($this->view->didUserWantToAddNewQuestion()) {
             if ($this->view->validateNewQuestion() == "") {
                 $theNewQuestion = $this->view->getTheNewQuestionToAdd();
-                $this->model->addNewQuestionToDatabase($theNewQuestion);
+
+                try {
+                    if($this->model->addNewQuestionToDatabase($theNewQuestion)) {
+                        $this->view->setAddNewQuestionSuccessful();
+                    }
+                }
+                catch (QuestionAlreadyExistsException $e) {
+                    $this->view->setQuestionAlreadyExists();
+                }
             }
         }
     }

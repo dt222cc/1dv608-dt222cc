@@ -17,7 +17,10 @@ class QuizView
 
     const QUIZ_THEME = "Who is the author of the following quote?";
 
+    // To select the correct view state
     private $isOver = false;
+    private $addedNewQuestionSuccessfully = false;
+    private $questionAlreadyExists = false;
 
     /** @var Quiz */
     private $model;
@@ -34,6 +37,22 @@ class QuizView
     public function setIsOver()
     {
         $this->isOver = true;
+    }
+
+    /**
+     * Set registration successful
+     */
+    public function setAddNewQuestionSuccessful()
+    {
+        $this->addedNewQuestionSuccessfully = true;
+    }
+
+    /**
+     * Set registration successful
+     */
+    public function setQuestionAlreadyExists()
+    {
+        $this->questionAlreadyExists = true;
     }
 
     /**
@@ -96,7 +115,13 @@ class QuizView
         // Registration of a new question
         if ($this->urlIsForNewQuestion()) {
             $message = "";
-            if ($this->didUserWantToAddNewQuestion()) {
+            if ($this->addedNewQuestionSuccessfully) {
+                $message = "The new question was successfully saved into the list";
+            }
+            else if ($this->questionAlreadyExists) {
+                $message = "This question already exists in the list";
+            }
+            else if ($this->didUserWantToAddNewQuestion()) {
                 $message = $this->validateNewQuestion($message);
             }
             return $this->generateAddQuestionHTML($message);
@@ -125,10 +150,6 @@ class QuizView
         if ($this->getThirdSolution() == "")     { $message .= "Third solution is missing<br>"; }
         if ($this->containsSpecialCharacters())  { $message .= "Fields contains invalid characters<br>"; }
         if ($this->containsDuplicateSolutions()) { $message .= "Fields contains duplicate solutions<br>"; }
-        else if ($message == "") {
-            echo "Success! Now check if the insert to database is ok";
-        }
-
         return $message;
     }
 
@@ -212,12 +233,11 @@ class QuizView
     private function generateAddQuestionHTML($message)
     {
         return "<p><a href ='".self::QUIZ_URL."'>Go back</a></p>
-            <p style ='color:#ff0000'><b>There's no user restriction for adding a new question to the database, at this moment.</b></p>
             <p><b>Form for adding a question to the database.</b></p>
-            <p style ='color:#ff0000'>".$message."</p>
+            <p style ='color:#ff0000'><b>".$message."</b></p>
             <form method='post'>
                 <label for='".self::QUIZ_NEWQUESTION."'>The question</label><br>
-                <textarea name='".self::QUIZ_NEWQUESTION."' rows='4' cols='50' value='".$this->getNewQuestion()."'></textarea>
+                <textarea name='".self::QUIZ_NEWQUESTION."' rows='8' cols='50'>".$this->getNewQuestion()."</textarea>
                 <br><br>
                 <label for='".self::QUIZ_FIRSTSOLUTION."'>Correct solution</label><br>
                 <input type='text' name='".self::QUIZ_FIRSTSOLUTION."' value='".$this->getFirstSolution()."' />
@@ -252,7 +272,7 @@ class QuizView
     private function removeSomeSpecialCharacters($string)
     {
         $string = strip_tags($string);
-        return preg_replace("/[^A-Za-z0-9#. _;:,'-]/", '', $string);
+        return preg_replace("/[^A-Za-z0-9#.*+\/?!= _;:,'-Â‰ˆ≈ƒ÷]/", '', $string);
     }
 
     /**
