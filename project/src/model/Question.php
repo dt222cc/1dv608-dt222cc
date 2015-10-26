@@ -1,9 +1,12 @@
 <?php
 
-/** Question entity */
 class Question
 {
-    // private $id;
+    /**
+     * @var string
+     * @var string[]
+     * @var int
+     */
     private $question;
     private $solutions;
     private $correctIndex;

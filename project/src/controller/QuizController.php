@@ -33,7 +33,7 @@ class QuizController
         else if ($this->view->didUserSolveAQuestion()) {
             $solutionToValidate = $this->view->getSolution();
             $isCorrect = $this->model->checkSolution($solutionToValidate);
-            $this->model->addResult($isCorrect);
+            $this->model->updateResults($isCorrect);
 
             if ($this->model->isOver()) {
                 $this->view->setIsOver();

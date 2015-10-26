@@ -2,7 +2,10 @@
 
 class Result
 {
-    /** @var int */
+    /**
+     * @var int
+     * @var int
+     */
     private $correct;
     private $incorrect;
 
