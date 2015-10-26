@@ -28,9 +28,9 @@ $m = new Quiz();
 $v = new QuizView($m);
 $c = new QuizController($m, $v);
 
-// HADNLE THE QUIZ SERVICE
+// HANDLE THE QUIZ SERVICE
 $c->doQuiz();
 
-// GENERATE OUTPUT
+// GENERATE THE OUTPUT
 $lv = new LayoutView();
 $lv->render($v);
