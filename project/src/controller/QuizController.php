@@ -19,10 +19,11 @@ class QuizController
     }
 
     /**
-     * Get the total amount of questions to be handled from the user choice within setup.
+     * Depending on which submit button was press:
      *
-     * Check if the solution is correct, depending on the result we increase the correct-/incorrect counter by one.
-     * When game is over the results gets presented to the user.
+     * Get the amount of questions for the quiz and initiate start game
+     * Solve question and set when the game is over
+     * Add a new question to the list if it passed the validation
      */
     public function doQuiz()
     {
