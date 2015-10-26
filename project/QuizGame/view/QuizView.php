@@ -15,8 +15,6 @@ class QuizView
     const QUIZ_URL = "index.php";
     const QUIZ_REGISTERURL = "newQuestion";
 
-    const QUIZ_THEME = "Who is the author of the following quote?";
-
     // To select the correct view state
     private $isOver = false;
     private $addedNewQuestionSuccessfully = false;
@@ -102,7 +100,11 @@ class QuizView
      */
     public function getTheNewQuestionToAdd()
     {
-        return new Question($this->getNewQuestion(), array($this->getFirstSolution(), $this->getSecondSolution(), $this->getThirdSolution()), 0);
+        return new Question($this->getNewQuestion(),
+                            array($this->getFirstSolution(),
+                            $this->getSecondSolution(),
+                            $this->getThirdSolution()),
+                            $this->model->getCorrectSolutionIndex());
     }
 
     /**
@@ -194,7 +196,7 @@ class QuizView
         shuffle($solutions);
 
         return "<form method='post'>
-                <b>".self::QUIZ_THEME."</b>
+                <b>Only one of these three solutions are correct.</b>
                 <p>".$question->getQuestion()."</p>
                 <input type='radio' name='".self::QUIZ_SOLUTION."' value='".$solutions[0]."' checked>" .$solutions[0]."<br>
                 <input type='radio' name='".self::QUIZ_SOLUTION."' value='".$solutions[1]."'>" .$solutions[1]."<br>
@@ -272,7 +274,7 @@ class QuizView
     private function removeSomeSpecialCharacters($string)
     {
         $string = strip_tags($string);
-        return preg_replace("/[^A-Za-z0-9#.*+\/?!= _;:,'-åäöÅÄÖ]/", '', $string);
+        return preg_replace("/[^A-Za-z0-9åäöÅÄÖ?!,.;:-_ ]/", "", $string);
     }
 
     /**
@@ -285,27 +287,25 @@ class QuizView
         if ($this->removeSomeSpecialCharacters($this->getNewQuestion()) != $this->getNewQuestion() ||
             $this->removeSomeSpecialCharacters($this->getFirstSolution()) != $this->getFirstSolution() ||
             $this->removeSomeSpecialCharacters($this->getSecondSolution()) != $this->getSecondSolution() ||
-            $this->removeSomeSpecialCharacters($this->getThirdSolution()) != $this->getThirdSolution())
-        {
+            $this->removeSomeSpecialCharacters($this->getThirdSolution()) != $this->getThirdSolution()) {
             return true;
         }
         return false;
     }
 
     /**
-     * Checks for duplicate solutions
+     * Checks for duplicate solutions, only need to check 1-2, 1-3 and 2-3 to cover this
      *
      * @return bool
      */
     private function containsDuplicateSolutions()
     {
-        if ($this->getFirstSolution() != "" && $this->getSecondSolution() != "" && $this->getThirdSolution() != "") {
-            if ($this->getFirstSolution() == $this->getSecondSolution() ||
-                $this->getFirstSolution() == $this->getThirdSolution() ||
-                $this->getSecondSolution() == $this->getThirdSolution())
-            {
-                return true;
-            }
+        if ($this->getFirstSolution() != "") {
+            if ($this->getFirstSolution() == $this->getSecondSolution()) { return true; }
+            if ($this->getFirstSolution() == $this->getThirdSolution())  { return true; }
+        }
+        if ($this->getSecondSolution() != "") {
+            if ($this->getSecondSolution() == $this->getThirdSolution()) { return true; }
         }
         return false;
     }
@@ -315,27 +315,27 @@ class QuizView
      *
      * @return mixed
      */
-    private function getNewQuestion() {
-        if (isset($_POST[self::QUIZ_NEWQUESTION]))
-            return $_POST[self::QUIZ_NEWQUESTION];
+    private function getNewQuestion()
+    {
+        if (isset($_POST[self::QUIZ_NEWQUESTION])) { return trim($_POST[self::QUIZ_NEWQUESTION]); }
         return "";
     }
 
-    private function getFirstSolution() {
-        if (isset($_POST[self::QUIZ_FIRSTSOLUTION]))
-            return $_POST[self::QUIZ_FIRSTSOLUTION];
+    private function getFirstSolution()
+    {
+        if (isset($_POST[self::QUIZ_FIRSTSOLUTION])) { return trim($_POST[self::QUIZ_FIRSTSOLUTION]); }
         return "";
     }
 
-    private function getSecondSolution() {
-        if (isset($_POST[self::QUIZ_SECONDSOLUTION]))
-            return $_POST[self::QUIZ_SECONDSOLUTION];
+    private function getSecondSolution()
+    {
+        if (isset($_POST[self::QUIZ_SECONDSOLUTION])) { return trim($_POST[self::QUIZ_SECONDSOLUTION]); }
         return "";
     }
 
-    private function getThirdSolution() {
-        if (isset($_POST[self::QUIZ_THIRDSOLUTION]))
-            return $_POST[self::QUIZ_THIRDSOLUTION];
+    private function getThirdSolution()
+    {
+        if (isset($_POST[self::QUIZ_THIRDSOLUTION])) { return trim($_POST[self::QUIZ_THIRDSOLUTION]); }
         return "";
     }
 }

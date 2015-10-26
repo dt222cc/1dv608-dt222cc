@@ -8,6 +8,8 @@ class Quiz
     const CORRECT = 'Quiz::Correct';
     const INCORRECT = 'Quiz::Incorrect';
 
+    const CORRECT_SOLUTION_INDEX = 0;
+
     /**
      * Initiate/Setting up the game
      *
@@ -98,6 +100,16 @@ class Quiz
     {
         $quizDAL = new QuizDAL();
         return $quizDAL->saveQuestion($questionToAdd);
+    }
+
+    /**
+     * Return the correct solution index (which can be altered at the top)
+     *
+     * @return int
+     */
+    public function getCorrectSolutionIndex()
+    {
+        return self::CORRECT_SOLUTION_INDEX;
     }
 
     /**
