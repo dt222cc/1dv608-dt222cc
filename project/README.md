@@ -34,6 +34,11 @@ For my MVC PHP project I intend to create a quiz game with three solutions for e
 
 ***
 
+#Class Diagram
+![class-diagram](http://yuml.me/08a64843)
+
+***
+
 #Installation
 1. Clone repo or download rar file, then unpack.
 2. Look into project/QuizGame/model/DAL/QuizDAL.php
