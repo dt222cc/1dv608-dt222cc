@@ -56,9 +56,15 @@ class QuizDAL
         // Then try to add to database
         if ($stmt = $conn->prepare("INSERT INTO quiz_game (question, solution_1, solution_2, solution_3, correct_solution_index) VALUES (?, ?, ?, ?, ?)")) {
             $question = $q->getQuestion();
-            $s1 = $q->getSolutions()[0];
-            $s2 = $q->getSolutions()[1];
-            $s3 = $q->getSolutions()[2];
+            /** PHP 5.2 */
+            $solutions = $q->getSolutions();
+            $s1 = $solutions[0];
+            $s2 = $solutions[1];
+            $s3 = $solutions[2];
+            /** PHP 5.4+ */
+            // $s1 = $q->getSolutions()[0];
+            // $s2 = $q->getSolutions()[1];
+            // $s3 = $q->getSolutions()[2];
             $correctIndex = $q->getCorrectSolutionIndex();
             $stmt->bind_param('ssssi', $question, $s1, $s2, $s3, $correctIndex);
             $stmt->execute();
