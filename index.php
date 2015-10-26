@@ -8,7 +8,7 @@
 		<ul>
 			<li><a href=a2/index.php>Assignment 2 - Login</a></li>
 			<li><a href=a4/index.php>Assignment 4 - Register</a></li>
-			<li><a href=project/QuizGame/index.php>Project - Quiz</a></li>
+			<li><a href=project/src/index.php>Project - Quiz</a></li>
 		</ul>
 	</body>
 </html>
