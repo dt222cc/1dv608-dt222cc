@@ -1,6 +1,7 @@
 ###A MVC project in PHP as part of the course 
 
 ##Resources
+- [Presentation](https://docs.google.com/presentation/d/1pVvMEesKjXdwYkKgqtEw4GxwL_ysZIv40Zp3kKYDKks/pub?start=false&loop=false&delayms=20000&slide=id.p4)
 - [Use Cases](https://github.com/dt222cc/1dv608-dt222cc/blob/master/project/usecases.md)
 - [Test Cases](https://github.com/dt222cc/1dv608-dt222cc/blob/master/project/testcases.md)
 - [Webbdeveloping with PHP - 1DV607](https://coursepress.lnu.se/kurs/webbutveckling-med-php/laborationsmiljo/projekt/)
