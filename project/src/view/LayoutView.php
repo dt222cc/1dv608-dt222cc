@@ -2,6 +2,11 @@
 
 class LayoutView
 {
+	public function __construct()
+	{
+		date_default_timezone_set("Europe/Stockholm");
+	}
+
 	/**
 	 * Render the Layout
 	 *
